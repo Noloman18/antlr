@@ -16,7 +16,7 @@ public class SimpleArithmeticParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		PLUS=1, MINUS=2, MULT=3, DIV=4, LPAREN=5, RPAREN=6, NUMBER=7, WS=8;
+		PLUS=1, MINUS=2, MULT=3, DIV=4, POW=5, LPAREN=6, RPAREN=7, NUMBER=8, WS=9;
 	public static final int
 		RULE_expression = 0, RULE_term = 1, RULE_factor = 2;
 	private static String[] makeRuleNames() {
@@ -28,13 +28,14 @@ public class SimpleArithmeticParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'+'", "'-'", "'*'", "'/'", "'('", "')'"
+			null, "'+'", "'-'", "'*'", "'/'", "'^'", "'('", "')'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "PLUS", "MINUS", "MULT", "DIV", "LPAREN", "RPAREN", "NUMBER", "WS"
+			null, "PLUS", "MINUS", "MULT", "DIV", "POW", "LPAREN", "RPAREN", "NUMBER", 
+			"WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -185,6 +186,10 @@ public class SimpleArithmeticParser extends Parser {
 		public TerminalNode DIV(int i) {
 			return getToken(SimpleArithmeticParser.DIV, i);
 		}
+		public List<TerminalNode> POW() { return getTokens(SimpleArithmeticParser.POW); }
+		public TerminalNode POW(int i) {
+			return getToken(SimpleArithmeticParser.POW, i);
+		}
 		public TermContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -216,12 +221,12 @@ public class SimpleArithmeticParser extends Parser {
 			setState(19);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==MULT || _la==DIV) {
+			while (((_la) & ~0x3f) == 0 && ((1L << _la) & 56L) != 0) {
 				{
 				{
 				setState(15);
 				_la = _input.LA(1);
-				if ( !(_la==MULT || _la==DIV) ) {
+				if ( !(((_la) & ~0x3f) == 0 && ((1L << _la) & 56L) != 0) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
@@ -318,13 +323,13 @@ public class SimpleArithmeticParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\b\u001e\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\t\u001e\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0001\u0000\u0001\u0000\u0001\u0000\u0005\u0000\n\b"+
 		"\u0000\n\u0000\f\u0000\r\t\u0000\u0001\u0001\u0001\u0001\u0001\u0001\u0005"+
 		"\u0001\u0012\b\u0001\n\u0001\f\u0001\u0015\t\u0001\u0001\u0002\u0001\u0002"+
 		"\u0001\u0002\u0001\u0002\u0001\u0002\u0003\u0002\u001c\b\u0002\u0001\u0002"+
 		"\u0000\u0000\u0003\u0000\u0002\u0004\u0000\u0002\u0001\u0000\u0001\u0002"+
-		"\u0001\u0000\u0003\u0004\u001d\u0000\u0006\u0001\u0000\u0000\u0000\u0002"+
+		"\u0001\u0000\u0003\u0005\u001d\u0000\u0006\u0001\u0000\u0000\u0000\u0002"+
 		"\u000e\u0001\u0000\u0000\u0000\u0004\u001b\u0001\u0000\u0000\u0000\u0006"+
 		"\u000b\u0003\u0002\u0001\u0000\u0007\b\u0007\u0000\u0000\u0000\b\n\u0003"+
 		"\u0002\u0001\u0000\t\u0007\u0001\u0000\u0000\u0000\n\r\u0001\u0000\u0000"+
@@ -334,11 +339,11 @@ public class SimpleArithmeticParser extends Parser {
 		"\u0012\u0003\u0004\u0002\u0000\u0011\u000f\u0001\u0000\u0000\u0000\u0012"+
 		"\u0015\u0001\u0000\u0000\u0000\u0013\u0011\u0001\u0000\u0000\u0000\u0013"+
 		"\u0014\u0001\u0000\u0000\u0000\u0014\u0003\u0001\u0000\u0000\u0000\u0015"+
-		"\u0013\u0001\u0000\u0000\u0000\u0016\u001c\u0005\u0007\u0000\u0000\u0017"+
-		"\u0018\u0005\u0005\u0000\u0000\u0018\u0019\u0003\u0000\u0000\u0000\u0019"+
-		"\u001a\u0005\u0006\u0000\u0000\u001a\u001c\u0001\u0000\u0000\u0000\u001b"+
-		"\u0016\u0001\u0000\u0000\u0000\u001b\u0017\u0001\u0000\u0000\u0000\u001c"+
-		"\u0005\u0001\u0000\u0000\u0000\u0003\u000b\u0013\u001b";
+		"\u0013\u0001\u0000\u0000\u0000\u0016\u001c\u0005\b\u0000\u0000\u0017\u0018"+
+		"\u0005\u0006\u0000\u0000\u0018\u0019\u0003\u0000\u0000\u0000\u0019\u001a"+
+		"\u0005\u0007\u0000\u0000\u001a\u001c\u0001\u0000\u0000\u0000\u001b\u0016"+
+		"\u0001\u0000\u0000\u0000\u001b\u0017\u0001\u0000\u0000\u0000\u001c\u0005"+
+		"\u0001\u0000\u0000\u0000\u0003\u000b\u0013\u001b";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

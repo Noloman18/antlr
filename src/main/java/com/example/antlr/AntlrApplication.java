@@ -20,6 +20,6 @@ public class AntlrApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        log.info("Expression: {}", arithmeticService.calculateExpression("1+2+3"));
+        log.info("Expression: {}", arithmeticService.calculateExpression("1+4^0.5"));
     }
 }

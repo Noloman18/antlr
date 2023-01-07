@@ -53,7 +53,10 @@ class EvalVisitor extends SimpleArithmeticBaseVisitor<Double> {
         for (int i = 1; i < ctx.factor().size(); i++) {
             if (ctx.MULT(i - 1) != null) {
                 result *= visit(ctx.factor(i));
-            } else {
+            }
+            else if (ctx.POW(i - 1) != null) {
+                result = Math.pow(result,visit(ctx.factor(i)));
+            }else {
                 result /= visit(ctx.factor(i));
             }
         }
